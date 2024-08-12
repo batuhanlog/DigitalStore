@@ -20,7 +20,7 @@ namespace DigitalStore.Core.DTOs
         public int CategoryId { get; set; } 
 
         [Required]
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         [MaxLength(50)]
         public string? Description { get; set; }

@@ -21,6 +21,9 @@ namespace DigitalStore.Core.Models
         public bool IsAvailable { get; set; } = true; // Satışta olup olmadığını belirten alan
 
 
+        public decimal PointsPercentage { get; set; } = 12; // Default points percentage
+        public decimal MaxPoints { get; set; } = 10; // Default max point
+
         // Many-to-Many 
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
 

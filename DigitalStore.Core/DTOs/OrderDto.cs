@@ -5,12 +5,9 @@ namespace DigitalStore.Core.DTOs
     public class OrderDto
     {
         [Required]
-        public string ProductIdentifiers { get; set; } = "";
-
-        [Required, MinLength(30), MaxLength(100)]
-        public string DeliveryAddress { get; set; } = "";
+        public string DeliveryAddress { get; set; } = string.Empty;
 
         [Required]
-        public string PaymentMethod { get; set; } = "";
+        public string PaymentMethod { get; set; } = string.Empty;
     }
 }

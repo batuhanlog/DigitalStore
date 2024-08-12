@@ -2,6 +2,9 @@
 using DigitalStore.Repository.Context;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace DigitalStore.API.Controllers
 {
@@ -9,58 +12,163 @@ namespace DigitalStore.API.Controllers
     [ApiController]
     public class CouponsController : ControllerBase
     {
-        private readonly ApplicationDbContext context;
+        private readonly ApplicationDbContext _context;
 
         public CouponsController(ApplicationDbContext context)
         {
-            this.context = context;
+            _context = context;
         }
 
-       
         [HttpPost]
-        public IActionResult CreateCoupon([FromBody] Coupon coupon)
+        //[Authorize]
+        public async Task<IActionResult> CreateCoupon([FromBody] CouponDto couponDto, [FromQuery] string token)
         {
-            coupon.Code = Guid.NewGuid().ToString().Substring(0, 10);
-            context.Coupons.Add(coupon);
-            context.SaveChanges();
-            return Ok(coupon);
+            var userId = GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return Unauthorized("Invalid token.");
+            }
+
+            var coupon = new Coupon
+            {
+                Code = couponDto.Code,
+                DiscountAmount = couponDto.DiscountAmount,
+                ExpiryDate = DateTime.UtcNow.AddMonths(1),
+                CreatedAt = DateTime.UtcNow,
+                IsUsed = false
+            };
+
+            _context.Coupons.Add(coupon);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { CouponId = coupon.Id, coupon.Code, coupon.DiscountAmount });
         }
+
 
         [HttpGet]
-        public IActionResult GetCoupons()
+        //[Authorize]
+        public async Task<IActionResult> GetCoupons([FromQuery] string token)
         {
-            var coupons = context.Coupons.ToList();
+            var userId = GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return Unauthorized("Invalid token.");
+            }
+
+            var coupons = await _context.Coupons.Include(c => c.User).ToListAsync();
             return Ok(coupons);
         }
 
-        
-        [HttpDelete("{id}")]
-        public IActionResult DeleteCoupon(int id)
+        [HttpGet("{id}")]
+        //[Authorize]
+        public async Task<IActionResult> GetCouponById(int id, [FromQuery] string token)
         {
-            var coupon = context.Coupons.Find(id);
-            if (coupon == null)
+            var userId = GetUserIdFromToken(token);
+            if (userId == null)
             {
-                return NotFound();
+                return Unauthorized("Invalid token.");
             }
 
-            context.Coupons.Remove(coupon);
-            context.SaveChanges();
-            return Ok();
+            var coupon = await _context.Coupons.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == id);
+            if (coupon == null)
+            {
+                return NotFound("Coupon not found.");
+            }
+            return Ok(coupon);
         }
 
-        [HttpPost("apply")]
-        public IActionResult ApplyCoupon(string code)
+        [HttpPut("{id}")]
+        //[Authorize]
+        public async Task<IActionResult> UpdateCoupon(int id, [FromBody] CouponDto updatedCoupon, [FromQuery] string token)
         {
-            var coupon = context.Coupons.FirstOrDefault(c => c.Code == code && !c.IsUsed && c.ExpiryDate > DateTime.Now);
-            if (coupon == null)
+            var userId = GetUserIdFromToken(token);
+            if (userId == null)
             {
-                return BadRequest("Invalid or expired coupon");
+                return Unauthorized("Invalid token.");
             }
 
-            coupon.IsUsed = true;
-            context.SaveChanges();
+            var coupon = await _context.Coupons.FindAsync(id);
+            if (coupon == null)
+            {
+                return NotFound("Coupon not found.");
+            }
+
+            coupon.DiscountAmount = updatedCoupon.DiscountAmount;
+            coupon.ExpiryDate = DateTime.UtcNow.AddMonths(1); // ExpiryDate'i burada belirleyin
+
+            await _context.SaveChangesAsync();
 
             return Ok(coupon);
         }
+
+        [HttpDelete("{id}")]
+        //[Authorize]
+        public async Task<IActionResult> DeleteCoupon(int id, [FromQuery] string token)
+        {
+            var userId = GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return Unauthorized("Invalid token.");
+            }
+
+            var coupon = await _context.Coupons.FindAsync(id);
+            if (coupon == null)
+            {
+                return NotFound("Coupon not found.");
+            }
+
+            _context.Coupons.Remove(coupon);
+            await _context.SaveChangesAsync();
+
+            return Ok("Coupon deleted successfully.");
+        }
+
+        [HttpPost("apply")]
+        //[Authorize]
+        public async Task<IActionResult> ApplyCoupon(string code, [FromQuery] string token)
+        {
+            var userId = GetUserIdFromToken(token);
+            if (userId == null)
+            {
+                return Unauthorized("Invalid token.");
+            }
+
+            var coupon = await _context.Coupons.FirstOrDefaultAsync(c => c.Code == code && !c.IsUsed && c.ExpiryDate > DateTime.UtcNow);
+            if (coupon == null)
+            {
+                return BadRequest("Invalid or expired coupon.");
+            }
+
+            coupon.IsUsed = true;
+            await _context.SaveChangesAsync();
+
+            return Ok(coupon);
+        }
+
+        private int? GetUserIdFromToken(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
+
+            if (jwtToken == null)
+            {
+                return null;
+            }
+
+            var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out int userId))
+            {
+                return null;
+            }
+
+            return userId;
+        }
+    }
+
+    public class CouponDto
+    {
+        public string Code { get; set; } = string.Empty;
+        public int DiscountAmount { get; set; }
     }
 }
