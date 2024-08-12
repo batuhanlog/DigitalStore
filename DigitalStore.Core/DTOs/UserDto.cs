@@ -23,6 +23,6 @@ namespace DigitalStore.Core.DTOs
         public string Password { get; set; } = "";
 
         [Required]
-        public string Role { get; set; } = "client"; // Varsayılan olarak "client" atanır
+        public string Role { get; set; } = "client"; 
     }
 }

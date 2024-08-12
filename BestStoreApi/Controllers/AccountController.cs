@@ -34,7 +34,6 @@ namespace DigitalStore.Service.Infrastructure
             _emailSender = emailSender;
             _tokenHandler = tokenHandler;
         }
-
         [HttpPost("Register")]
         public async Task<IActionResult> Register(UserDto userDto)
         {
@@ -58,8 +57,6 @@ namespace DigitalStore.Service.Infrastructure
                 }
                 return BadRequest(ModelState);
             }
-
-            // Kullanıcıya belirtilen rolü atama, eğer geçerli bir rol değilse "client" atanır
             var role = userDto.Role.ToLower() == "admin" ? "admin" : "client";
             await _userManager.AddToRoleAsync(user, role);
 
@@ -113,7 +110,7 @@ namespace DigitalStore.Service.Infrastructure
                 Email = user.Email,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Role = roles.FirstOrDefault(), // İlk rolü al
+                Role = roles.FirstOrDefault(), 
                 CreatedAt = user.CreatedAt
             };
 
@@ -173,8 +170,6 @@ namespace DigitalStore.Service.Infrastructure
 
             return Ok("The password was successfully changed ✓ ");
         }
-
-
         //[Authorize]
         [HttpGet("Profile")]
         public async Task<IActionResult> GetProfile(string token)
@@ -196,7 +191,7 @@ namespace DigitalStore.Service.Infrastructure
                 return Unauthorized("Invalid token.");
             }
 
-            // Token içindeki UserId claim'ini al
+           
             var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (userIdClaim == null)
@@ -204,17 +199,16 @@ namespace DigitalStore.Service.Infrastructure
                 return Unauthorized("User ID not found in token.");
             }
 
-            // Kullanıcıyı veritabanından bul
+            
             var user = await _userManager.FindByIdAsync(userIdClaim);
             if (user == null)
             {
                 return Unauthorized("User not found.");
             }
 
-            // Kullanıcının rollerini al
+            
             var roles = await _userManager.GetRolesAsync(user);
 
-            // Kullanıcı profilini DTO'ya aktar
             var userProfileDto = new UserProfileDto
             {
                 Id = user.Id,
@@ -223,17 +217,12 @@ namespace DigitalStore.Service.Infrastructure
                 Email = user.Email,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Role = roles.FirstOrDefault(), // İlk rolü al
+                Role = roles.FirstOrDefault(), 
                 CreatedAt = user.CreatedAt
             };
 
             return Ok(userProfileDto);
         }
-
-
-
-
-
         //[Authorize]
         [HttpPut("UpdateProfile")]
         public async Task<IActionResult> UpdateProfile(string token, UserProfileUpdateDto userProfileUpdateDto)
@@ -243,7 +232,6 @@ namespace DigitalStore.Service.Infrastructure
                 return Unauthorized("Token is required.");
             }
 
-            // Token'ı çöz ve doğrula
             var handler = new JwtSecurityTokenHandler();
             JwtSecurityToken jwtToken;
             try
@@ -255,7 +243,7 @@ namespace DigitalStore.Service.Infrastructure
                 return Unauthorized("Invalid token.");
             }
 
-            // Token içindeki UserId claim'ini al
+           
             var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (userIdClaim == null)
@@ -294,13 +282,12 @@ namespace DigitalStore.Service.Infrastructure
                 Email = user.Email,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Role = roles.FirstOrDefault(), // İlk rolü al
+                Role = roles.FirstOrDefault(), 
                 CreatedAt = user.CreatedAt
             };
 
             return Ok(userProfileDto);
         }
-
 
         //[Authorize]
         [HttpPut("UpdatePassword")]
@@ -311,7 +298,7 @@ namespace DigitalStore.Service.Infrastructure
                 return Unauthorized("Token is required.");
             }
 
-            // Token'ı çöz ve doğrula
+          
             var handler = new JwtSecurityTokenHandler();
             JwtSecurityToken jwtToken;
             try
@@ -322,8 +309,6 @@ namespace DigitalStore.Service.Infrastructure
             {
                 return Unauthorized("Invalid token.");
             }
-
-            // Token içindeki UserId claim'ini al
             var userIdClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             if (userIdClaim == null)

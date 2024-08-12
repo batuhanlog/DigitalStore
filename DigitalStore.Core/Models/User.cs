@@ -24,7 +24,7 @@ namespace DigitalStore.Core.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
 
-        // Kullanıcı ile ilişkili kuponlar
+  
         public ICollection<Coupon> Coupons { get; set; } = new List<Coupon>();
     }
 }

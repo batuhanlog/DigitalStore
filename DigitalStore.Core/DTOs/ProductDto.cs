@@ -17,7 +17,7 @@ namespace DigitalStore.Core.DTOs
         public string Brand { get; set; } = string.Empty;
 
         [Required]
-        public int CategoryId { get; set; } // Category ID olarak değiştirildi
+        public int CategoryId { get; set; } 
 
         [Required]
         public decimal Price { get; set; }

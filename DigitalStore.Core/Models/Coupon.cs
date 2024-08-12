@@ -14,8 +14,8 @@ namespace DigitalStore.Core.Models
         public DateTime ExpiryDate { get; set; }
         public bool IsUsed { get; set; } = false;
 
-        // Kullanıcıyla ilişki
+
         public int UserId { get; set; }
-        public User User { get; set; } // Kullanıcı ile ilişkiyi tanımlayan navigation property
+        public User User { get; set; } 
     }
 }

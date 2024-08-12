@@ -36,7 +36,7 @@ namespace DigitalStore.Service.Infrastructure
                 issuer: _configuration["JwtSettings:Issuer"],
                 audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30), // Token geçerlilik süresi
+                expires: DateTime.Now.AddMinutes(30), 
                 signingCredentials: creds
             );
 

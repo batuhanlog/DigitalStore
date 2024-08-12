@@ -17,7 +17,7 @@ namespace DigitalStore.Core.Models
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        // Many-to-Many ilişkisi
+        // Many-to-Many 
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
 
     }

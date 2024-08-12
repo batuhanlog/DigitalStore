@@ -18,28 +18,27 @@ namespace DigitalStore.Repository.Context
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Coupon> Coupons { get; set; }
         public DbSet<PasswordReset> PasswordResets { get; set; }
-        public DbSet<Category> Categories { get; set; } = null!; // Kategoriler için DbSet
-        public DbSet<ProductCategory> ProductCategories { get; set; } = null!; // Junction Table
+        public DbSet<Category> Categories { get; set; } = null!; 
+        public DbSet<ProductCategory> ProductCategories { get; set; } = null!; 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // ProductCategory için Many-to-Many ilişki yapılandırması
             modelBuilder.Entity<ProductCategory>()
-                .HasKey(pc => new { pc.ProductId, pc.CategoryId }); // Composite key tanımlama
+                .HasKey(pc => new { pc.ProductId, pc.CategoryId }); // Composite key 
 
             modelBuilder.Entity<ProductCategory>()
                 .HasOne(pc => pc.Product)
                 .WithMany(p => p.ProductCategories)
-                .HasForeignKey(pc => pc.ProductId); // Product ile ilişki
+                .HasForeignKey(pc => pc.ProductId); // Product 
 
             modelBuilder.Entity<ProductCategory>()
                 .HasOne(pc => pc.Category)
                 .WithMany(c => c.ProductCategories)
-                .HasForeignKey(pc => pc.CategoryId); // Category ile ilişki
+                .HasForeignKey(pc => pc.CategoryId); // Category 
 
-            // Diğer konfigürasyonlar
+            
             modelBuilder.ApplyConfiguration(new ProductCategoryConfiguration());
         }
     }

@@ -13,10 +13,8 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddControllers();
 
-// Swagger/OpenAPI configuration
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -30,17 +28,16 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-// Database context configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     string connectionString = builder.Configuration.GetConnectionString("MsSqlConnection")!;
     options.UseSqlServer(connectionString);
 });
 
-// Email service
+
 builder.Services.AddScoped<EmailSender>();
 
-// Token handler service
+
 builder.Services.AddScoped<DigitalStore.Service.Infrastructure.TokenHandler>();
 
 
@@ -76,9 +73,6 @@ builder.Services.AddAuthentication(opt =>
 
 var app = builder.Build();
 
-// Identity configuration with roles
-
-// Ensure roles are created at startup
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -95,7 +89,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -106,7 +100,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// Global exception handler middleware
+
 app.UseCustomExpection();
 
 app.UseAuthentication();

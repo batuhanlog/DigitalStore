@@ -21,7 +21,6 @@ namespace DigitalStore.API.Controllers
             _context = context;
         }
 
-        // GET: api/Category
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
@@ -30,8 +29,7 @@ namespace DigitalStore.API.Controllers
                                                       .ToListAsync();
             return Ok(categories);
         }
-
-        // GET: api/Category/5
+     
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int id)
         {
@@ -47,14 +45,12 @@ namespace DigitalStore.API.Controllers
             return Ok(category);
         }
 
-        // POST: api/Category
         //[Authorize(Roles = "admin")]
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromQuery] string token, [FromBody] CategoryDto categoryDto)
         {
             try
             {
-                // Token'ı doğrula ve claimleri al
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
@@ -63,28 +59,20 @@ namespace DigitalStore.API.Controllers
                     throw new InvalidTokenException();
                 }
 
-                // Token'dan email ve name claim'lerini al
                 var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                 var nameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
-                // Eğer email veya name içinde "admin" geçiyorsa, kullanıcı admin olarak kabul edilir
                 if ((emailClaim != null && emailClaim.Contains("admin", StringComparison.OrdinalIgnoreCase)) ||
                     (nameClaim != null && nameClaim.Contains("admin", StringComparison.OrdinalIgnoreCase)))
                 {
-                    // Admin olarak kabul edilir
                 }
                 else
                 {
                     throw new UnauthorizedActionException();
                 }
-
-                // Gerekli alanları kontrol et
                 if (string.IsNullOrEmpty(categoryDto.Name) || string.IsNullOrEmpty(categoryDto.Url) || string.IsNullOrEmpty(categoryDto.Tags))
                 {
                     return BadRequest("Name, Url ve Tags alanları gereklidir.");
                 }
-
-                // Yeni kategori oluştur
                 var category = new Category
                 {
                     Name = categoryDto.Name,
@@ -107,24 +95,15 @@ namespace DigitalStore.API.Controllers
             }
             catch (InternalServerErrorException ex)
             {
-                // InternalServerErrorException özel mesajını döndür
+              
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             catch (Exception ex)
             {
-                // Diğer beklenmedik hatalar için genel bir InternalServerErrorException fırlat
-                throw new InternalServerErrorException();  // Sınıfın varsayılan mesajını kullan
+                
+                throw new InternalServerErrorException();  
             }
         }
-
-
-
-
-
-
-
-
-        // PUT: api/Category/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
         {
@@ -155,19 +134,13 @@ namespace DigitalStore.API.Controllers
                     throw;
                 }
             }
-
             return NoContent();
         }
-
-        // DELETE: api/Category/5
-        // DELETE: api/Category/5
-        // DELETE: api/Category
         [HttpDelete]
         public async Task<IActionResult> DeleteCategory([FromQuery] int id, [FromQuery] string token)
         {
             try
             {
-                // Token'ı doğrula ve claimleri al
                 var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
@@ -175,16 +148,11 @@ namespace DigitalStore.API.Controllers
                 {
                     throw new InvalidTokenException();
                 }
-
-                // Token'dan email ve name claim'lerini al
                 var emailClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
                 var nameClaim = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value;
-
-                // Eğer email veya name içinde "admin" geçiyorsa, kullanıcı admin olarak kabul edilir
                 if ((emailClaim != null && emailClaim.Contains("admin", StringComparison.OrdinalIgnoreCase)) ||
                     (nameClaim != null && nameClaim.Contains("admin", StringComparison.OrdinalIgnoreCase)))
                 {
-                    // Admin olarak kabul edilir
                 }
                 else
                 {
@@ -212,12 +180,10 @@ namespace DigitalStore.API.Controllers
             }
             catch (InternalServerErrorException ex)
             {
-                // InternalServerErrorException özel mesajını döndür
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
             catch (Exception ex)
             {
-                // Diğer beklenmedik hatalar için genel bir InternalServerErrorException fırlat
                 throw new InternalServerErrorException("Kategori silinirken bir hata oluştu.", ex);
             }
         }

@@ -82,10 +82,10 @@ namespace DigitalStore.API.Controllers
                 Email = user.Email,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Role = roles.FirstOrDefault(), // İlk rolü al
+                Role = roles.FirstOrDefault(), 
                 CreatedAt = user.CreatedAt,
-                WalletBalance = $"₺{user.WalletBalance:0}", // Bu alanı ekleyin
-                Points = user.Points // Bu alanı ekleyin
+                WalletBalance = $"₺{user.WalletBalance:0}", 
+                Points = user.Points 
             };
 
             return Ok(userProfileDto);
