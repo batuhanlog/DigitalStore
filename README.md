@@ -9,6 +9,9 @@ This application is designed to manage different aspects of an e-commerce platfo
 📂 Category: Organizes products into categories for easier browsing.<br>
 🔗 ProductCategory: Manages the many-to-many relationship between products and categories.<br>
 
+
+![swagger](https://github.com/user-attachments/assets/3a01ed39-5216-4840-8a85-567747c807d9)
+<br>
 ![postmanswag](https://github.com/user-attachments/assets/4f7b485b-1ee5-4a1b-ba32-c63db56d8ff8)
 
 
