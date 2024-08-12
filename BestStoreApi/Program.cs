@@ -1,3 +1,4 @@
+using DigitalStore.API.Filters;
 using DigitalStore.API.Middlewares;
 using DigitalStore.API.Services;
 using DigitalStore.Core.Models;
@@ -14,7 +15,10 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidateFilterAttribute>();
+}).AddJsonOptions(options =>
 {
     // Döngüsel referanslarý önlemek için ReferenceHandler.Preserve kullanýlýyor
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;

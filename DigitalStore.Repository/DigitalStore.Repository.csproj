@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Seeds\" />
     <Folder Include="Repositories\" />
+    <Folder Include="Seeds\" />
   </ItemGroup>
 
   <ItemGroup>

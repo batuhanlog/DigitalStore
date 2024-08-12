@@ -14,10 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
-    <Folder Include="Validations\" />
     <Folder Include="Services\" />
-    <Folder Include="Mapping\" />
+    <Folder Include="Validations\" />
   </ItemGroup>
 
 </Project>

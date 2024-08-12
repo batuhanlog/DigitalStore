@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DigitalStore.Core.DTOs;
+using DigitalStore.Core.Models;
+using DigitalStore.Core.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 
 namespace DigitalStore.API.Filters
 {
-    public class NotFoundFilter // <T> : IAsyncActionFilter where T : BaseEntity
+    public class NotFoundFilter  <T> : IAsyncActionFilter where T : BaseEntity
     {
-       /* private readonly IService<T> _service;
+        private readonly IService<T> _service;
 
         public NotFoundFilter(IService<T> service)
         {
@@ -32,5 +35,5 @@ namespace DigitalStore.API.Filters
 
             context.Result = new NotFoundObjectResult(CustomResponseDto<NoContentDto>.Fail(400, $"{typeof(T).Name}({id}) not found"));
         }
-   /*/ }
+    }
 }

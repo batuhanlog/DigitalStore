@@ -21,7 +21,6 @@ namespace DigitalStore.API.Controllers
         //[Authorize]
         public IActionResult MyWallet([FromForm] string cardNumber, [FromForm] string cvv, [FromForm] string expiryDate, [FromQuery] string token)
         {
-            // Token'den kullanıcıyı bulmak için claim'leri al
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
@@ -43,7 +42,6 @@ namespace DigitalStore.API.Controllers
                 return NotFound("User not found.");
             }
 
-            // Ödeme bilgilerini kontrol et (Burada gerçek bir doğrulama yapmıyoruz)
             if (cardNumber.Length == 16 && cvv.Length == 3 && !string.IsNullOrEmpty(expiryDate))
             {
                 // WalletBalance'ı artır
@@ -59,7 +57,6 @@ namespace DigitalStore.API.Controllers
         //[Authorize]
         public IActionResult MyBudget([FromQuery] string token)
         {
-            // Token'den kullanıcıyı bulmak için claim'leri al
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadToken(token) as JwtSecurityToken;
 
@@ -80,8 +77,6 @@ namespace DigitalStore.API.Controllers
             {
                 return NotFound("User not found.");
             }
-
-            // Kullanıcının adı, WalletBalance'ı ve puanları döndürülür
             var budgetInfo = new
             {
                 FullName = $"{user.FirstName} {user.LastName}",

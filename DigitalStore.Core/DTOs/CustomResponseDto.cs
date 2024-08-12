@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DigitalStore.Core.DTOs
 {
-    public  class CustomResponseDto<T>
+    public class CustomResponseDto<T>
     {
         public T Data { get; set; }
 
@@ -25,11 +25,15 @@ namespace DigitalStore.Core.DTOs
         }
         public static CustomResponseDto<T> Fail(int statusCode, List<string> errors)
         {
-            return new CustomResponseDto<T> { StatusCode = statusCode, Errors=errors };
+            return new CustomResponseDto<T> { StatusCode = statusCode, Errors = errors };
         }
         public static CustomResponseDto<T> Fail(int statusCode, string error)
         {
-            return new CustomResponseDto<T> { StatusCode = statusCode, Errors = new List<String> { error} };
+            return new CustomResponseDto<T> { StatusCode = statusCode, Errors = new List<String> { error } };
         }
     }
+
+}
+public class NoContentDto
+{
 }

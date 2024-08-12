@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Modules%28-%29\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

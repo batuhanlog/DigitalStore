@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
+using DigitalStore.Core.DTOs; 
 
 namespace DigitalStore.API.Filters
 {
     public class ValidateFilterAttribute : ActionFilterAttribute
     {
-        /*
-         * public override void OnActionExecuting(ActionExecutingContext context)
+        
+          public override void OnActionExecuting(ActionExecutingContext context)
         {
             if(!context.ModelState.IsValid)
             {
@@ -14,6 +16,6 @@ namespace DigitalStore.API.Filters
                 
             }
         }
-         */
+         
     }
 }

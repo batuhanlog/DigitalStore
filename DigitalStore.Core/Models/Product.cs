@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DigitalStore.Core.Models
 {
-    public class Product
+    public class Product 
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
