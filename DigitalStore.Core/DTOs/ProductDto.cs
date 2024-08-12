@@ -10,10 +10,10 @@ namespace DigitalStore.Core.DTOs
 {
     public class ProductDto
     {
-        [Required, MaxLength(100)]
+        [Required, MaxLength(25)]
         public string Name { get; set; } = string.Empty;
 
-        [Required, MaxLength(100)]
+        [Required, MaxLength(25)]
         public string Brand { get; set; } = string.Empty;
 
         [Required]
@@ -22,9 +22,13 @@ namespace DigitalStore.Core.DTOs
         [Required]
         public decimal Price { get; set; }
 
-        [MaxLength(4000)]
+        [MaxLength(50)]
         public string? Description { get; set; }
 
+        [Required]
+        public int StockQuantity { get; set; }
 
+        [Required]
+        public bool IsAvailable { get; set; }
     }
 }

@@ -104,6 +104,7 @@ namespace DigitalStore.API.Controllers
                 throw new InternalServerErrorException();  
             }
         }
+        //[Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory(int id, [FromBody] Category category)
         {
@@ -136,6 +137,7 @@ namespace DigitalStore.API.Controllers
             }
             return NoContent();
         }
+        //[Authorize(Roles = "admin")]
         [HttpDelete]
         public async Task<IActionResult> DeleteCategory([FromQuery] int id, [FromQuery] string token)
         {

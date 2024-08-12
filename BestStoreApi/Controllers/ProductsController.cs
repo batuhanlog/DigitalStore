@@ -22,24 +22,26 @@ namespace DigitalStore.API.Controllers
 
         [HttpGet]
         public IActionResult GetProducts(string? search, string? category,
-            int? minPrice, int? maxPrice,
-            string? sort, string? order,
-            int? page)
+                                         int? minPrice, int? maxPrice,
+                                         string? sort, string? order,
+                                         int? page, bool? isAvailable)
         {
             IQueryable<Product> query = _context.Products.Include(p => p.ProductCategories)
                                                          .ThenInclude(pc => pc.Category);
 
-            // search functionality
+            // Arama işlevselliği
             if (search != null)
             {
                 query = query.Where(p => p.Name.Contains(search) || p.Description.Contains(search));
             }
 
+            // Kategoriye göre filtreleme
             if (category != null)
             {
                 query = query.Where(p => p.ProductCategories.Any(pc => pc.Category.Name == category));
             }
 
+            // Fiyat aralığı filtreleme
             if (minPrice != null)
             {
                 query = query.Where(p => p.Price >= minPrice);
@@ -50,7 +52,13 @@ namespace DigitalStore.API.Controllers
                 query = query.Where(p => p.Price <= maxPrice);
             }
 
-            // sort functionality
+            // Stok durumu filtreleme
+            if (isAvailable.HasValue)
+            {
+                query = query.Where(p => p.IsAvailable == isAvailable.Value);
+            }
+
+            // Sıralama işlevselliği
             if (sort == null) sort = "id";
             if (order == null || order != "asc") order = "desc";
 
@@ -76,7 +84,7 @@ namespace DigitalStore.API.Controllers
                     break;
             }
 
-            // pagination functionality
+            // Sayfalama işlevselliği
             if (page == null || page < 1) page = 1;
 
             int pageSize = 5;
@@ -97,8 +105,8 @@ namespace DigitalStore.API.Controllers
             return Ok(response);
         }
 
-
         [HttpGet("{id}")]
+        //[Authorize(Roles = "admin")]
         public IActionResult GetProduct(int id)
         {
             var product = _context.Products.Include(p => p.ProductCategories)
@@ -123,7 +131,9 @@ namespace DigitalStore.API.Controllers
                 Brand = productDto.Brand,
                 Price = productDto.Price,
                 Description = productDto.Description,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                StockQuantity = productDto.StockQuantity, // Stok miktarı
+                IsAvailable = productDto.IsAvailable // Ürün durumu
             };
 
             var category = await _context.Categories.FindAsync(productDto.CategoryId);
@@ -144,6 +154,7 @@ namespace DigitalStore.API.Controllers
             return Ok(product);
         }
 
+        //[Authorize(Roles = "admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] ProductDto productDto)
         {
@@ -158,6 +169,8 @@ namespace DigitalStore.API.Controllers
             product.Brand = productDto.Brand;
             product.Price = productDto.Price;
             product.Description = productDto.Description ?? "";
+            product.StockQuantity = productDto.StockQuantity; // Stok miktarını güncelle
+            product.IsAvailable = productDto.IsAvailable; // Ürün durumunu güncelle
 
             product.ProductCategories.Clear();
 
@@ -173,6 +186,22 @@ namespace DigitalStore.API.Controllers
                 Category = category
             });
 
+            await _context.SaveChangesAsync();
+
+            return Ok(product);
+        }
+
+        //[Authorize(Roles = "admin")]
+        [HttpPut("update-stock/{id}")]
+        public async Task<IActionResult> UpdateStock(int id, int stockQuantity)
+        {
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            product.StockQuantity = stockQuantity;
             await _context.SaveChangesAsync();
 
             return Ok(product);

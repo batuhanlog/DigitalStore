@@ -17,6 +17,10 @@ namespace DigitalStore.Core.Models
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+        public int StockQuantity { get; set; } = 0;  // Stok adedi
+        public bool IsAvailable { get; set; } = true; // Satışta olup olmadığını belirten alan
+
+
         // Many-to-Many 
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
 
