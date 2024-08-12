@@ -49,7 +49,7 @@ namespace DigitalStore.API.Controllers
                 Address = user.Address,
                 Role = "client",
                 CreatedAt = user.CreatedAt,
-                WalletBalance = $"₺{user.WalletBalance:0}", 
+                WalletBalance = user.WalletBalance, 
                 Points = user.Points 
             }).ToList();
 
@@ -84,7 +84,7 @@ namespace DigitalStore.API.Controllers
                 Address = user.Address,
                 Role = roles.FirstOrDefault(), 
                 CreatedAt = user.CreatedAt,
-                WalletBalance = $"₺{user.WalletBalance:0}", 
+                WalletBalance = user.WalletBalance, 
                 Points = user.Points 
             };
 

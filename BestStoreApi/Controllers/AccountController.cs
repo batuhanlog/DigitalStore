@@ -217,8 +217,10 @@ namespace DigitalStore.Service.Infrastructure
                 Email = user.Email,
                 Phone = user.PhoneNumber,
                 Address = user.Address,
-                Role = roles.FirstOrDefault(), 
-                CreatedAt = user.CreatedAt
+                Role = roles.FirstOrDefault(),
+                CreatedAt = user.CreatedAt,
+                WalletBalance = user.WalletBalance, // WalletBalance'ı doğrudan al
+                Points = user.Points
             };
 
             return Ok(userProfileDto);

@@ -17,7 +17,7 @@
         public string Role { get; set; } = "";
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public string WalletBalance { get; set; } = "₺0"; 
+        public int WalletBalance { get; set; } = 0; 
         public int Points { get; set; } = 0;
     }
 }
